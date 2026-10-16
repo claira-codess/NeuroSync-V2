@@ -114,3 +114,187 @@ What if we could predict overwhelm before it happens? NeuroSync V2 explores how 
   </div>
 
 </div>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  color:#1f3c88;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  margin:20px 0;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+button{
+  background:#1f3c88;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#3458b3;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  margin:8px 0;
+  padding:8px;
+}
+
+.stable{
+  color:green;
+}
+
+.elevated{
+  color:orange;
+}
+
+.high{
+  color:red;
+}
+let currentScore = 0;
+
+function calculateDistress(){
+
+  const heartRate =
+    Number(document.getElementById("heartRate").value);
+
+  const hrv =
+    document.getElementById("hrv").value;
+
+  const movement =
+    document.getElementById("movement").value;
+
+  const noise =
+    document.getElementById("noise").value;
+
+  let score = 0;
+
+  score += heartRate > 100 ? 30 : 10;
+  score += hrv === "Low" ? 25 : 5;
+  score += movement === "Agitated" ? 20 : 0;
+  score += noise === "Loud" ? 25 : 5;
+
+  currentScore = score;
+
+  let status = "";
+  let recommendation = "";
+
+  if(score >= 70){
+    status = "High Risk";
+  }
+  else if(score >= 40){
+    status = "Elevated";
+  }
+  else{
+    status = "Stable";
+  }
+
+  const profile =
+    document.getElementById("profile").value;
+
+  if(profile === "Seeker"){
+    recommendation =
+      "Try movement, music, or tactile stimulation.";
+  }
+
+  if(profile === "Avoider"){
+    recommendation =
+      "Move to a quieter environment and reduce sensory input.";
+  }
+
+  if(profile === "Mixed"){
+    recommendation =
+      "Balance calming strategies with controlled stimulation.";
+  }
+
+  document.getElementById("score").innerText =
+    "Distress Score: " + score;
+
+  document.getElementById("status").innerText =
+    "Status: " + status;
+
+  document.getElementById("recommendation").innerText =
+    recommendation;
+}
+
+function runScenario(){
+
+  const scenario =
+    document.getElementById("scenario").value;
+
+  const scenarios = {
+    "Quiet Bedroom":5,
+    "Classroom":20,
+    "Crowded Cafeteria":40,
+    "Shopping Mall":50,
+    "Sporting Event":35,
+    "Family Gathering":25
+  };
+
+  const predicted =
+    currentScore + scenarios[scenario];
+
+  document.getElementById("prediction").innerText =
+    "Predicted Distress Score: " + predicted;
+}
+
+function saveJournal(){
+
+  const mood =
+    document.getElementById("mood").value;
+
+  const notes =
+    document.getElementById("notes").value;
+
+  const entry =
+    `<p><strong>${mood}</strong><br>${notes}</p>`;
+
+  let existing =
+    localStorage.getItem("journal") || "";
+
+  existing += entry;
+
+  localStorage.setItem(
+    "journal",
+    existing
+  );
+
+  loadJournal();
+}
+
+function loadJournal(){
+
+  document.getElementById(
+    "journalEntries"
+  ).innerHTML =
+    localStorage.getItem("journal") || "";
+}
+
+function rateIntervention(rating){
+
+  document.getElementById(
+    "feedbackResult"
+  ).innerText =
+    "Last intervention rated: " + rating;
+}
+
+loadJournal();
